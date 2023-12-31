@@ -51,3 +51,22 @@ class Post(models.Model):
                              self.publish.month,\
                              self.publish.day,\
                              self.slug])
+    
+
+class Comment(models.Model):
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='comments')
+    name = models.CharField(max_length=80)
+    email = models.EmailField()
+    body = models.TextField()
+    created = models.DateTimeField(auto_now_add=True) # auto_now_add=True means the date will be saved automatically when creating an object
+    updated = models.DateTimeField(auto_now=True) # auto_now=True means the date will be updated automatically when saving an object
+    active = models.BooleanField(default=True) # This field is used to manually deactivate inappropriate comments
+
+    class Meta:
+        ordering = ['created']
+        indexes = [
+            models.Index(fields=['created']),
+        ]
+
+    def __str__(self):
+        return f'Comment by {self.name} on {self.post}'
